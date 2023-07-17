@@ -1,0 +1,349 @@
+{
+	"info": {
+		"_postman_id": "d1d9a4af-840b-456c-9a53-44edc2c29723",
+		"name": "DPG_REST_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Auth",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "{{user_agent}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/auth",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "isAuth",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRoaXMudXNlcm5hbWUiLCJ1c2VyX2lkIjoidGhpcy5pZCIsImlhdCI6MTYyNTU1ODIwNywiZXhwIjoxNjI1NTYxODA3fQ.0kfejP6D4NeSGnkXiocoJb6idzugS90Oqh0rWRnFtuk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://192.168.2.28:1337/api/auth/isAuth",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"28"
+							],
+							"port": "1337",
+							"path": [
+								"api",
+								"auth",
+								"isAuth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refreshToken",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"user-agent": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRoaXMudXNlcm5hbWUiLCJ1c2VyX2lkIjoidGhpcy5pZCIsImlhdCI6MTYyNTU1ODIwNywiZXhwIjoxNjI1NTYxODA3fQ.0kfejP6D4NeSGnkXiocoJb6idzugS90Oqh0rWRnFtuk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "{{user_agent}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/auth/refreshToken",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refreshToken"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "{{user_agent}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "first_name",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/users/add",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "first_name",
+									"value": "new_first_name",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "new_last_name",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "new_email",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "new_password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "new_username",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/users/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/users/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:1337"
+		},
+		{
+			"key": "user_agent",
+			"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+		},
+		{
+			"key": "access_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRoaXMudXNlcm5hbWUiLCJ1c2VyX2lkIjoidGhpcy5pZCIsImlhdCI6MTYyNTU1ODIwNywiZXhwIjoxNjI1NTYxODA3fQ.0kfejP6D4NeSGnkXiocoJb6idzugS90Oqh0rWRnFtuk"
+		},
+		{
+			"key": "refresh_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRoaXMudXNlcm5hbWUiLCJ1c2VyX2lkIjoidGhpcy5pZCIsImlhdCI6MTYyNTQ5NzQ1MywiZXhwIjoxNjI2NzkzNDUzfQ.qzdEziGfQU9MUYmzUeLx7GnaB0wf484dga2A-UvZoe8"
+		}
+	]
+}
