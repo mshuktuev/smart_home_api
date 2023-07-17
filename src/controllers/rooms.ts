@@ -1,7 +1,7 @@
 import Room from '@/models/room';
 import { isEmpty } from '@/utils';
 import { Request, Response } from 'express';
-import io from '@/services/socket';
+import { io } from '@/services/express';
 
 export const getAll = async (req: Request, res: Response) => {
 	try {
