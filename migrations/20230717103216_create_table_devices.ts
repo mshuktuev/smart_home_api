@@ -13,8 +13,6 @@ export async function up(knex: Knex): Promise<void> {
 				table.boolean('active').defaultTo(false);
 				table.boolean('warning').nullable().defaultTo(null);
 				table.integer('temperature').nullable().defaultTo(null);
-				table.integer('min_temperature').nullable().defaultTo(null);
-				table.integer('max_temperature').nullable().defaultTo(null);
 				table.timestamp('date_added').defaultTo(knex.fn.now());
 				table.timestamp('date_modified').defaultTo(knex.fn.now());
 			});

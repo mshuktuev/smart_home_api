@@ -1,13 +1,14 @@
-import { create, getById, update, deleteHouse, getAll } from '@/controllers/house';
-import { isAuth } from '@/middlewares';
+import { create, getById, getByIdWithRoomData, update, deleteHouse, getAll } from '@/controllers/house';
+import { auth } from '@/middlewares';
 import express from 'express';
 
 const router = express.Router();
 
-router.get('', isAuth, getAll);
-router.get('/:id', isAuth, getById);
-router.post('/create', isAuth, create);
-router.put('/update/:id', isAuth, update);
-router.delete('/delete/:id', isAuth, deleteHouse);
+router.get('', auth, getAll);
+router.get('/:id', auth, getById);
+router.get('/withRooms/:id', auth, getByIdWithRoomData);
+router.post('/create', auth, create);
+router.put('/update/:id', auth, update);
+router.delete('/delete/:id', auth, deleteHouse);
 
 export default router;

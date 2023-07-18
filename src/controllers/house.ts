@@ -44,6 +44,32 @@ export const getById = async (req: Request, res: Response) => {
 	}
 };
 
+export const getByIdWithRoomData = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		if (isEmpty(id)) {
+			throw new Error('An unexpected error has occurred');
+		}
+
+		// const device = await Device.query().withGraphFetched('houses.rooms').findById(id);
+		const device = await House.query().findById(id).withGraphFetched('rooms.[devices]');
+
+		if (!device) {
+			throw new Error('Device not found');
+		}
+
+		await res.json({
+			success: true,
+			data: device,
+		});
+	} catch (e: any) {
+		await res.json({
+			success: false,
+			message: e.message || e,
+		});
+	}
+};
+
 export const create = async (req: Request, res: Response) => {
 	try {
 		let { name, space_id } = req.body;

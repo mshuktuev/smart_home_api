@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { User } from '@/models';
 import { Token } from '@/models';
 import { isEmpty } from '@/utils';
@@ -36,6 +36,11 @@ export const login = async (req: Request, res: Response) => {
 
 		if (!user_token) throw new Error('An unexpected error has occurred');
 
+		res.cookie('refreshToken', refresh_token, {
+			maxAge: 30 * 24 * 60 * 60 * 1000,
+			httpOnly: true,
+		});
+
 		await res.json({
 			success: true,
 			data: {
@@ -52,11 +57,34 @@ export const login = async (req: Request, res: Response) => {
 	}
 };
 
+export const logout = async (req: Request, res: Response) => {
+	try {
+		const { refreshToken } = req.cookies;
+		await Token.query()
+			.findOne({
+				refresh_token: refreshToken,
+			})
+			.delete();
+		res.clearCookie('refreshToken');
+		return res.json({
+			success: true,
+		});
+	} catch (e: any) {
+		return res.json({
+			success: false,
+			message: e.message || e,
+		});
+	}
+};
+
 /**
- * Refresh
- * @returns {json} Возвращает статус обработки запроса и JWT новые ключи авторизации, в случае ее успешного завершения
+ * isAuth
+ *
+ * @param {string} access_token Токен пользователя
+ * @returns {boolean} Статус авторизации
  */
-export const refresh = async (req: Request, res: Response) => {
+
+export const isAuth = async (req: Request, res: Response) => {
 	try {
 		const bearerHeader = req.headers['authorization'];
 
@@ -65,6 +93,41 @@ export const refresh = async (req: Request, res: Response) => {
 		const access_token = bearerHeader?.split(/\s/)[1];
 		const user_token = await Token.query().findOne({
 			access_token,
+		});
+
+		if (!user_token) throw new Error('An unexpected error has occurred');
+
+		const user = await User.query().findOne({
+			id: user_token.user_id,
+		});
+
+		if (!user) throw new Error('An unexpected error has occurred');
+
+		await user.getAccessToken();
+
+		await res.json({
+			success: true,
+		});
+	} catch (e: any) {
+		await res.json({
+			success: false,
+			message: e.message || e,
+		});
+	}
+};
+
+/**
+ * Refresh
+ * @returns {json} Возвращает статус обработки запроса и JWT новые ключи авторизации, в случае ее успешного завершения
+ */
+export const refresh = async (req: Request, res: Response) => {
+	try {
+		const { refreshToken } = req.cookies;
+
+		if (isEmpty(refreshToken)) throw new Error('An unexpected error has occurred');
+
+		const user_token = await Token.query().findOne({
+			refresh_token: refreshToken,
 		});
 
 		if (!user_token) throw new Error('An unexpected error has occurred');

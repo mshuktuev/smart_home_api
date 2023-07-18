@@ -1,13 +1,13 @@
 import { create, getById, update, deleteSpace, getAll } from '@/controllers/spaces';
-import { isAuth } from '@/middlewares';
+import { auth } from '@/middlewares';
 import express from 'express';
 
 const router = express.Router();
 
-router.get('', isAuth, getAll);
-router.get('/:id', isAuth, getById);
-router.post('/create', isAuth, create);
-router.put('/update/:id', isAuth, update);
-router.delete('/delete/:id', isAuth, deleteSpace);
+router.get('', auth, getAll);
+router.get('/:id', auth, getById);
+router.post('/create', auth, create);
+router.put('/update/:id', auth, update);
+router.delete('/delete/:id', auth, deleteSpace);
 
 export default router;

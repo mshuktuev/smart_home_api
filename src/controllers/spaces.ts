@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 
 export const getAll = async (req: Request, res: Response) => {
 	try {
-		const spaces = await Space.query();
+		const spaces = await Space.query().withGraphFetched('houses');
 
 		await res.json({
 			success: true,
@@ -26,7 +26,7 @@ export const getById = async (req: Request, res: Response) => {
 		}
 
 		// const space = await Space.query().withGraphFetched('houses.rooms').findById(id);
-		const space = await Space.query().findById(id);
+		const space = await Space.query().findById(id).withGraphFetched('houses');
 
 		if (!space) {
 			throw new Error('Space not found');

@@ -9,7 +9,7 @@ import httpStatus from 'http-status';
  * @returns {boolean} Статус авторизации
  */
 
-export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
+export const auth = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const bearerHeader = req.headers['authorization'];
 

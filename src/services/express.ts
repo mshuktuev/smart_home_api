@@ -28,8 +28,13 @@ app.use(bodyParser.json());
 /**
  * Routing
  */
+app.use(
+	cors({
+		origin: config.clientUrl,
+		credentials: true,
+	})
+);
 app.use('/api', routes);
-app.use(cors());
 // app.use(errorHandler.handleNotFound);
 // app.use(errorHandler.handleError);
 const server = createServer(app);

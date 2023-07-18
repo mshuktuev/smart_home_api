@@ -1,4 +1,4 @@
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 export default {
@@ -7,6 +7,7 @@ export default {
 	env: process.env.NODE_ENV,
 	secret: process.env.APP_SECRET,
 	hostname: process.env.HOSTNAME,
+	clientUrl: process.env.CLIENT_URL,
 	db: {
 		client: process.env.DB_CLIENT,
 		database: process.env.DB_DATABASE,
@@ -21,9 +22,9 @@ export default {
 		password: process.env.TRANSPORTER_PASSWORD,
 	},
 	jwt: {
-		access_token_secret: process.env.ACCESS_TOKEN_SECRET || "",
+		access_token_secret: process.env.ACCESS_TOKEN_SECRET || '',
 		access_token_expiration: process.env.ACCESS_TOKEN_EXPIRATION,
-		refresh_token_secret: process.env.REFRESH_TOKEN_SECRET || "",
+		refresh_token_secret: process.env.REFRESH_TOKEN_SECRET || '',
 		refresh_token_expiration: process.env.REFRESH_TOKEN_EXPIRATION,
-	}
+	},
 };

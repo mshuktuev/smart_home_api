@@ -1,7 +1,6 @@
 import Room from '@/models/room';
 import { isEmpty } from '@/utils';
 import { Request, Response } from 'express';
-import { io } from '@/services/express';
 
 export const getAll = async (req: Request, res: Response) => {
 	try {
@@ -25,7 +24,6 @@ export const getById = async (req: Request, res: Response) => {
 		if (isEmpty(id)) {
 			throw new Error('An unexpected error has occurred');
 		}
-		io.emit('room', id);
 
 		const room = await Room.query().findById(id);
 

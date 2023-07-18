@@ -1,5 +1,6 @@
 import { Model } from 'objection';
 import House from './house';
+import Device from './device';
 
 export default class Room extends Model {
 	id!: number;
@@ -20,6 +21,15 @@ export default class Room extends Model {
 				join: {
 					from: 'rooms.house_id',
 					to: 'houses.id',
+				},
+			},
+			devices: {
+				relation: Model.HasManyRelation,
+				modelClass: Device,
+				join: {
+					from: 'rooms.id',
+
+					to: 'devices.room_id',
 				},
 			},
 		};
