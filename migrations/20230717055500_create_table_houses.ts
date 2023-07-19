@@ -6,8 +6,6 @@ export async function up(knex: Knex): Promise<void> {
 			return knex.schema.createTable('houses', (table) => {
 				table.increments('id').primary();
 				table.text('name').notNullable();
-				table.integer('space_id').unsigned();
-				table.foreign('space_id').references('spaces.id').onDelete('CASCADE');
 				table.timestamp('date_added').defaultTo(knex.fn.now());
 				table.timestamp('date_modified').defaultTo(knex.fn.now());
 			});

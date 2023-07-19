@@ -7,10 +7,14 @@ export async function up(knex: Knex): Promise<void> {
 				table.increments('id').primary();
 				table.text('name').notNullable();
 				table.integer('room_id').unsigned();
-				table.foreign('room_id').references('rooms.id').onDelete('CASCADE');
+				table.foreign('room_id').references('rooms.id');
+				table.integer('house_id').unsigned();
+				table.foreign('house_id').references('houses.id');
 				table.text('type').notNullable();
 				table.boolean('enabled').defaultTo(true);
 				table.boolean('active').defaultTo(false);
+				table.integer('x').defaultTo(0);
+				table.integer('y').defaultTo(0);
 				table.boolean('warning').nullable().defaultTo(null);
 				table.integer('temperature').nullable().defaultTo(null);
 				table.timestamp('date_added').defaultTo(knex.fn.now());

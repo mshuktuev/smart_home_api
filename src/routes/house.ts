@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('', auth, getAll);
 router.get('/:id', auth, getById);
-router.get('/withRooms/:id', auth, getByIdWithRoomData);
+router.get('/withData/:id', auth, getByIdWithRoomData);
 router.post('/create', auth, create);
 router.put('/update/:id', auth, update);
 router.delete('/delete/:id', auth, deleteHouse);

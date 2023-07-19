@@ -1,5 +1,6 @@
 import { Model } from 'objection';
 import Room from './room';
+import House from './house';
 
 export default class Device extends Model {
 	id!: number;
@@ -7,8 +8,11 @@ export default class Device extends Model {
 	type!: string;
 	enabled!: boolean;
 	active!: boolean;
+	x!: number;
+	y!: number;
 	temperature?: number;
-	room_id?: number;
+	room_id?: number | null;
+	house_id?: number | null;
 	warning?: boolean;
 	date_added!: Date;
 	date_modified!: Date;
@@ -25,6 +29,14 @@ export default class Device extends Model {
 				join: {
 					from: 'devices.room_id',
 					to: 'rooms.id',
+				},
+			},
+			house: {
+				relation: Model.BelongsToOneRelation,
+				modelClass: House,
+				join: {
+					from: 'devices.house_id',
+					to: 'house.id',
 				},
 			},
 		};

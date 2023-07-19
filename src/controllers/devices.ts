@@ -2,10 +2,29 @@ import Device from '@/models/device';
 import { isEmpty } from '@/utils';
 import { Request, Response } from 'express';
 import { io } from '@/services/express';
+import House from '@/models/house';
+import Room from '@/models/room';
+
+const deviceTypes = ['light', 'fan', 'switch', 'thermostat', 'conditioner', 'door', 'window', 'watering', 'socket', 'heating'];
 
 export const getAll = async (req: Request, res: Response) => {
 	try {
 		const devices = await Device.query();
+
+		await res.json({
+			success: true,
+			data: devices,
+		});
+	} catch (e: any) {
+		await res.json({
+			success: false,
+			message: e.message || e,
+		});
+	}
+};
+export const getAllUnused = async (req: Request, res: Response) => {
+	try {
+		const devices = await Device.query().where('room_id', null);
 
 		await res.json({
 			success: true,
@@ -47,13 +66,19 @@ export const getById = async (req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
 	try {
-		let { name } = req.body;
+		let { name, type } = req.body;
 
-		if (isEmpty(name)) {
+		if (isEmpty(type) || isEmpty(name)) {
 			throw new Error('All fields must be fill');
 		}
+		if (!deviceTypes.includes(type)) {
+			throw new Error('Invalid type');
+		}
 
-		await Device.query().insert({ name });
+		await Device.query().insert({
+			name,
+			type,
+		});
 
 		await res.json({
 			success: true,
@@ -67,17 +92,100 @@ export const create = async (req: Request, res: Response) => {
 	}
 };
 
-export const update = async (req: Request, res: Response) => {
+export const detachDevice = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
-		const { name, type, enabled, room_id } = req.body;
 
 		const device = await Device.query().findById(id);
 
 		if (!device) {
 			throw new Error('Device not found');
 		}
+
+		const updatedDevice = await Device.query().updateAndFetchById(id, {
+			house_id: null,
+			room_id: null,
+		});
+
+		await res.json({
+			success: true,
+			message: 'Device was updated',
+			data: updatedDevice,
+		});
+	} catch (e: any) {
+		await res.json({
+			success: false,
+			message: e.message || e,
+		});
+	}
+};
+
+export const attachDevice = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const { house_id, room_id, room_name } = req.body;
+
+		const device = await Device.query().findById(id);
+
+		if (!device) {
+			throw new Error('Device not found');
+		}
+
+		const house = await House.query().findById(house_id);
+		if (!house) {
+			throw new Error('House not found');
+		}
+		let room;
+
+		if (room_id) {
+			room = await Room.query().findById(room_id);
+
+			if (!room) {
+				room = await Room.query().insertAndFetch({
+					name: room_name,
+					house_id,
+				});
+			}
+		} else {
+			room = await Room.query().insertAndFetch({
+				name: room_name,
+				house_id,
+			});
+		}
+
+		const updatedDevice = await Device.query().updateAndFetchById(id, {
+			house_id,
+			room_id: room.id,
+		});
+
+		await res.json({
+			success: true,
+			message: 'Device was updated',
+			data: updatedDevice,
+		});
+	} catch (e: any) {
+		await res.json({
+			success: false,
+			message: e.message || e,
+		});
+	}
+};
+
+export const update = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const { name, type, x, y, active, temperature, warning, enabled } = req.body;
+
+		const device = await Device.query().findById(id);
+
+		if (!device) {
+			throw new Error('Device not found');
+		}
+		if (!deviceTypes.includes(type)) {
+			throw new Error('Invalid type');
+		}
 		const newData: any = {};
+		console.log(x, y);
 
 		if (!isEmpty(name)) {
 			newData.name = name;
@@ -85,12 +193,25 @@ export const update = async (req: Request, res: Response) => {
 		if (!isEmpty(type)) {
 			newData.type = type;
 		}
-		if (!isEmpty(enabled)) {
+		if (x !== undefined) {
+			newData.x = x;
+		}
+		if (y !== undefined) {
+			newData.y = y;
+		}
+		if (active !== undefined) {
+			newData.active = active;
+		}
+		if (temperature !== undefined) {
+			newData.temperature = temperature;
+		}
+		if (warning !== undefined) {
+			newData.warning = warning;
+		}
+		if (enabled !== undefined) {
 			newData.enabled = enabled;
 		}
-		if (!isEmpty(room_id)) {
-			newData.room_id = room_id;
-		}
+		console.log(newData);
 
 		const updatedDevice = await Device.query().updateAndFetchById(id, newData);
 
@@ -109,7 +230,12 @@ export const update = async (req: Request, res: Response) => {
 export const updateDeviceInfo = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
-		const { active, temperature, warning } = req.body;
+
+		const { active, temperature, warning, enabled } = req.body;
+
+		if (!id) {
+			throw new Error('Device not found');
+		}
 
 		const device = await Device.query().findById(id);
 
@@ -118,17 +244,51 @@ export const updateDeviceInfo = async (req: Request, res: Response) => {
 		}
 		const newData: any = {};
 
-		if (!isEmpty(active)) {
+		if (active !== undefined) {
 			newData.active = active;
 		}
-		if (!isEmpty(temperature)) {
+		if (temperature !== undefined) {
 			newData.temperature = temperature;
 		}
-		if (!isEmpty(warning)) {
+		if (warning !== undefined) {
 			newData.warning = warning;
+		}
+		if (enabled !== undefined) {
+			newData.enabled = enabled;
 		}
 
 		const updatedDevice = await Device.query().updateAndFetchById(id, newData);
+		io.emit('deviceUpdated', updatedDevice);
+
+		await res.json({
+			success: true,
+			message: 'Device was updated',
+			data: updatedDevice,
+		});
+	} catch (e: any) {
+		await res.json({
+			success: false,
+			message: e.message || e,
+		});
+	}
+};
+export const updateDevicePosition = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+
+		const { x, y } = req.body;
+
+		if (!id) {
+			throw new Error('Device not found');
+		}
+
+		const device = await Device.query().findById(id);
+
+		if (!device) {
+			throw new Error('Device not found');
+		}
+
+		const updatedDevice = await Device.query().updateAndFetchById(id, { x, y });
 		io.emit('deviceUpdated', updatedDevice);
 
 		await res.json({

@@ -15,20 +15,11 @@ export default class Room extends Model {
 
 	static get relationMappings() {
 		return {
-			space: {
-				relation: Model.BelongsToOneRelation,
-				modelClass: House,
-				join: {
-					from: 'rooms.house_id',
-					to: 'houses.id',
-				},
-			},
 			devices: {
 				relation: Model.HasManyRelation,
 				modelClass: Device,
 				join: {
 					from: 'rooms.id',
-
 					to: 'devices.room_id',
 				},
 			},

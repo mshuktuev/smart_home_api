@@ -1,6 +1,6 @@
 import { Model } from 'objection';
-import Space from './space';
 import Room from './room';
+import Device from './device';
 
 export default class House extends Model {
 	id!: number;
@@ -23,20 +23,20 @@ export default class House extends Model {
 
 	static get relationMappings() {
 		return {
-			space: {
-				relation: Model.BelongsToOneRelation,
-				modelClass: Space,
-				join: {
-					from: 'houses.space_id',
-					to: 'spaces.id',
-				},
-			},
 			rooms: {
 				relation: Model.HasManyRelation,
 				modelClass: Room,
 				join: {
 					from: 'houses.id',
 					to: 'rooms.house_id',
+				},
+			},
+			devices: {
+				relation: Model.HasManyRelation,
+				modelClass: Device,
+				join: {
+					from: 'rooms.id',
+					to: 'devices.room_id',
 				},
 			},
 		};
