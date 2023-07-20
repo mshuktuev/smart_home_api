@@ -35,8 +35,8 @@ export default class House extends Model {
 				relation: Model.HasManyRelation,
 				modelClass: Device,
 				join: {
-					from: 'rooms.id',
-					to: 'devices.room_id',
+					from: 'houses.id',
+					to: 'devices.house_id',
 				},
 			},
 		};
